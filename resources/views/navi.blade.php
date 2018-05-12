@@ -492,7 +492,6 @@
             $('html,body').animate({scrollTop:'0px'},800);
         })
         </script>
-<script type="text/javascript" src="//live.teddybear.site/php/app.php?widget-init.js"></script>
 </body>
 
 </html>
