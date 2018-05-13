@@ -7,15 +7,14 @@
     <title>板栗云导航</title>
     <link rel="shortcut icon" href="favcion.ico" />
     <link rel="stylesheet" href=" css/iconfont.css">
-    <link rel="stylesheet" href="../plug-in/normalize.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="container" id="container">
+    <div class="container" id="app">
         <aside class="left-bar" id="leftBar">
             <div class="title">
-                <p>板栗云导航</p>
+                <p>@{{site_name}}</p>
             </div>
             <nav class="nav">
                 <div class="item active"><a href=""><i class="iconfont icon-daohang2"></i>极客导航</a><i class="line"></i></div>
@@ -44,6 +43,21 @@
                         <div class="line diagonal line-2"></div>
                       </label>
                     </div>
+                </div>
+                <div v-for="site_set in sites" class="box">
+                    <a href="#" name="bbs"></a>
+                    <div class="sub-category">
+                        <div><i class="iconfont icon-shequ"></i>@{{ site_set.class }}</div>
+                    </div>
+                    <div v-for="site in site_set.list">
+                        <a target="_blank" href="@{{ site.url }}">
+                            <div class="item">
+                                <div class="logo"><img src="img/csdn.ico" alt="CNDS"> @{{ site.name }}</div>
+                                <div class="desc">@{{ site.summary }}</div>
+                            </div>
+                        </a>
+                    </div>
+
                 </div>
                 <!-- 开发社区 -->
                 <div class="box">
@@ -491,6 +505,77 @@
         $('#fixedBar').click(function() {
             $('html,body').animate({scrollTop:'0px'},800);
         })
+        </script>
+        <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+        <script>
+            // 创建一个 Vue 实例或 "ViewModel"
+            // 它连接 View 与 Model
+            new Vue({
+                el: '#app',
+                data: {
+                    'site_name':'板栗云导航',
+                    'sites': [
+                        {
+                            "class": "常用",
+                            "list": [
+                                {
+                                    "id": 1,
+                                    "user_id": "banli",
+                                    "class": "常用",
+                                    "name": "百度",
+                                    "url": "baidu.com",
+                                    "summary": "常用的网站",
+                                    "up": 0,
+                                    "down": 0,
+                                    "updated_at": "2018-05-13 16:13:39",
+                                    "created_at": "2018-05-13 16:13:39"
+                                },
+                                {
+                                    "id": 2,
+                                    "user_id": "banli",
+                                    "class": "常用",
+                                    "name": "新浪",
+                                    "url": "sina.com",
+                                    "summary": "常用的网站",
+                                    "up": 0,
+                                    "down": 0,
+                                    "updated_at": "2018-05-13 16:14:18",
+                                    "created_at": "2018-05-13 16:14:18"
+                                },
+                                {
+                                    "id": 3,
+                                    "user_id": "banli",
+                                    "class": "常用",
+                                    "name": "stackoverflow",
+                                    "url": "stackoverflow.com",
+                                    "summary": "常用的网站",
+                                    "up": 0,
+                                    "down": 0,
+                                    "updated_at": "2018-05-13 16:14:50",
+                                    "created_at": "2018-05-13 16:14:50"
+                                }
+                            ]
+                        },
+                        {
+                            "class": "个人项目",
+                            "list": [
+                                {
+                                    "id": 4,
+                                    "user_id": "banli",
+                                    "class": "个人项目",
+                                    "name": "板栗云共享",
+                                    "url": "share.cnfunny.cn",
+                                    "summary": "常用的网站",
+                                    "up": 0,
+                                    "down": 0,
+                                    "updated_at": "2018-05-13 16:15:47",
+                                    "created_at": "2018-05-13 16:15:47"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            })
         </script>
 </body>
 

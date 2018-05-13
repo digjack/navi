@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('navi');
 });
+
+Route::get('list', "IndexController@list");
+Route::put('save', "IndexController@save");
