@@ -443,8 +443,10 @@
                     </div>
                 </footer>
                 <div id="fixedBar"><svg class="Zi Zi--BackToTop" title="回到顶部" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M16.036 19.59a1 1 0 0 1-.997.995H9.032a.996.996 0 0 1-.997-.996v-7.005H5.03c-1.1 0-1.36-.633-.578-1.416L11.33 4.29a1.003 1.003 0 0 1 1.412 0l6.878 6.88c.782.78.523 1.415-.58 1.415h-3.004v7.005z"></path></svg></div>
+            </div>
         </section>
         <script src="js/jquery.js"></script>
+
         <script>
         var oMenu = document.getElementById('menu');
         var oLeftBar = document.getElementById('leftBar');
@@ -507,76 +509,10 @@
         })
         </script>
         <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-        <script>
-            // 创建一个 Vue 实例或 "ViewModel"
-            // 它连接 View 与 Model
-            new Vue({
-                el: '#app',
-                data: {
-                    'site_name':'板栗云导航',
-                    'sites': [
-                        {
-                            "class": "常用",
-                            "list": [
-                                {
-                                    "id": 1,
-                                    "user_id": "banli",
-                                    "class": "常用",
-                                    "name": "百度",
-                                    "url": "baidu.com",
-                                    "summary": "常用的网站",
-                                    "up": 0,
-                                    "down": 0,
-                                    "updated_at": "2018-05-13 16:13:39",
-                                    "created_at": "2018-05-13 16:13:39"
-                                },
-                                {
-                                    "id": 2,
-                                    "user_id": "banli",
-                                    "class": "常用",
-                                    "name": "新浪",
-                                    "url": "sina.com",
-                                    "summary": "常用的网站",
-                                    "up": 0,
-                                    "down": 0,
-                                    "updated_at": "2018-05-13 16:14:18",
-                                    "created_at": "2018-05-13 16:14:18"
-                                },
-                                {
-                                    "id": 3,
-                                    "user_id": "banli",
-                                    "class": "常用",
-                                    "name": "stackoverflow",
-                                    "url": "stackoverflow.com",
-                                    "summary": "常用的网站",
-                                    "up": 0,
-                                    "down": 0,
-                                    "updated_at": "2018-05-13 16:14:50",
-                                    "created_at": "2018-05-13 16:14:50"
-                                }
-                            ]
-                        },
-                        {
-                            "class": "个人项目",
-                            "list": [
-                                {
-                                    "id": 4,
-                                    "user_id": "banli",
-                                    "class": "个人项目",
-                                    "name": "板栗云共享",
-                                    "url": "share.cnfunny.cn",
-                                    "summary": "常用的网站",
-                                    "up": 0,
-                                    "down": 0,
-                                    "updated_at": "2018-05-13 16:15:47",
-                                    "created_at": "2018-05-13 16:15:47"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            })
-        </script>
+        <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+        <script src="{{ URL::asset('js/navi.js') }}"></script>
+    </div>
+
 </body>
 
 </html>

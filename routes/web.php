@@ -16,4 +16,4 @@ Route::get('/', function () {
 });
 
 Route::get('list', "IndexController@list");
-Route::put('save', "IndexController@save");
+Route::put('site', "IndexController@save");
