@@ -9,9 +9,8 @@
     <link rel="shortcut icon" href="favcion.ico" />
     <link rel="stylesheet" href=" css/iconfont.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/simple.css">
     <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/simple.css">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 </head>

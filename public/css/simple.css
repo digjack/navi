@@ -1,4 +1,17 @@
 .id-input{
-    margin: 4% auto;
+    margin: 2% auto;
     width: 50% !important;
+}
+.container{
+    max-width:2000px;
+}
+.nav {
+    display: block;
+}
+
+.desc {
+    box-sizing: content-box;
+}
+a:hover {
+    text-decoration: none;
 }
