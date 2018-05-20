@@ -12,8 +12,22 @@
 */
 
 Route::get('/', function () {
+    session('user_id', 'default');
+    session('login_status', 0);
     return view('navi');
 });
 
 Route::get('list', "IndexController@list");
 Route::put('site', "IndexController@save");
+Route::delete('site', "IndexController@delete");
+
+Route::get('user', "IndexController@userInfo");
+Route::put('user', "IndexController@regist");
+Route::post('user', "IndexController@login");
+Route::post('logout', "IndexController@logout");
+
+Route::get('sitegen', "IndexController@sitegen");
+
+
+
+

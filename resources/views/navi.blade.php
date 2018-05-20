@@ -5,9 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>板栗云导航</title>
+
     <link rel="shortcut icon" href="favcion.ico" />
     <link rel="stylesheet" href=" css/iconfont.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/simple.css">
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/modal.css">
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -17,18 +23,14 @@
                 <p>@{{site_name}}</p>
             </div>
             <nav class="nav">
-                <div class="item active"><a href=""><i class="iconfont icon-daohang2"></i>极客导航</a><i class="line"></i></div>
-                <ul class="nav-item" id="navItem">
-                    <li><a href="#bbs" class="active"><i class="iconfont icon-shequ"></i>开发社区</a></li>
-                    <li><a href="#sill"><i class="iconfont icon-blogger"></i>技术博客</a></li>
-                    <li><a href="#docs"><i class="iconfont icon-wendangdocument78"></i>开发文档</a></li>
-                    <li><a href="#tools"><i class="iconfont icon-tool"></i>实用工具</a></li>
-                    <li><a href="#design"><i class="iconfont icon-designer"></i>设计资源</a></li>
-                    <li><a href="#study"><i class="iconfont icon-xuexi1"></i>学无止境</a></li>
-                    <li><a href="#operation"><i class="iconfont icon-yunying"></i>网络运营</a></li>
-                    <li class="download"><a href=""><i class="iconfont icon-github"></i>源码下载</a></li>
+                <div class="item active"><a href="">添加地址</a><i class="line"></i></div>
+
+                <ul  class="nav-item" id="navItem">
+                    <li v-for="(site_set, index) in sites"  >
+                        <a v-bind:href="'#' + index" class="active"><i class="iconfont"></i>@{{ site_set.class }}</a>
+                    </li>
                 </ul>
-                <div class="item comment"><a target="_blank" href="http://www.zcbboke.com/liuyan.html"><i class="iconfont icon-liuyan"></i>留言</a></div>
+                <div class="item comment"><a target="_blank" href="#"><i class="iconfont icon-liuyan"></i>留言</a></div>
             </nav>
         </aside>
         <section class="main">
@@ -44,396 +46,100 @@
                       </label>
                     </div>
                 </div>
-                <div v-for="site_set in sites" class="box">
-                    <a href="#" name="bbs"></a>
+                <div class="input-group id-input">
+                    <input type="text" class="form-control" v-model="user_id" placeholder="用户Id:密码(如 xiaodong:123)" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button v-if="login_status == 0 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Login">登录</button>
+                        <button v-if="login_status == 2 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Logout">注销</button>
+                        <button v-if="login_status == 0" class="btn btn-outline-secondary" type="button" @click="Regist">注册</button>
+                        <button v-if="login_status == 2" class="btn btn-outline-secondary" data-toggle="modal" data-target="#EditModal" type="button">添加网站</button>
+                    </div>
+                </div>
+                <div v-for="(site_set, index) in sites" class="box">
+                    <a href="#" v-bind:name="index"></a>
                     <div class="sub-category">
-                        <div><i class="iconfont icon-shequ"></i>@{{ site_set.class }}</div>
+                        <div><i class="iconfont"></i>@{{ site_set.class }}</div>
                     </div>
                     <div v-for="site in site_set.list">
-                        <a target="_blank" href="@{{ site.url }}">
+                        <a target="_blank" v-bind:href="site.url">
                             <div class="item">
-                                <div class="logo"><img src="img/csdn.ico" alt="CNDS"> @{{ site.name }}</div>
+                                <div class="logo"><img v-bind:src="site.ico"> @{{ site.name }}</div>
                                 <div class="desc">@{{ site.summary }}</div>
+                                <a v-if="login_status == 2" id="show-modal" @click="CurrentSite(site)"><i class="icon-edit" data-toggle="modal" data-target="#EditModal"></i></a>
+                                <a v-if="login_status == 2" id="show-modal" @click="CurrentSite(site)"><i class="icon-trash" data-toggle="modal" data-target="#DeleteModal"></i></a>
                             </div>
                         </a>
                     </div>
-
                 </div>
-                <!-- 开发社区 -->
-                <div class="box">
-                    <a href="#" name="bbs"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-shequ"></i>开发社区</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="http://blog.csdn.net/">
-                            <div class="item">
-                                <div class="logo"><img src="img/csdn.ico" alt="CNDS"> CNDS</div>
-                                <div class="desc">中国最大的IT社区和服务平台</div>
-                            </div>
-                        </a>
-                        <a href="https://juejin.im/">
-                            <div class="item">
-                                <div class="logo"><img src="img/gold-favicon.png" alt="掘金"> 掘金</div>
-                                <div class="desc">只有高手分享的中文技术社区</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://github.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/github.ico" alt="github"> github</div>
-                                <div class="desc">面向开源及私有软件项目的git托管平台</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://stackoverflow.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/stackoverflow.ico" alt="stackoverflow"> stackoverflow</div>
-                                <div class="desc">国外编程相关的IT技术问答网站</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://segmentfault.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/segmentfault.ico" alt="segmentfault"> segmentfault</div>
-                                <div class="desc">一个专注于解决编程问题，提高开发技能的社区。</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.zhihu.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/zhihu.ico" alt="知乎"> 知乎</div>
-                                <div class="desc">与世界分享你的知识、经验和见解与世界分享你的知识、经验和见解</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.cnblogs.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/cnblogs.ico" alt="博客园"> 博客园</div>
-                                <div class="desc">博客模式的技术分享社区</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.oschina.net/">
-                            <div class="item">
-                                <div class="logo"><img src="img/oschina.ico" alt="开源中国"> 开源中国</div>
-                                <div class="desc">
-                                    <div class="info">
-                                        目前中国最大的开源技术社区
+
+{{--修改网站编辑框--}}
+            <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">网站编辑</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">地址: </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" v-model="current_site.url">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" @click="SiteGen(current_site.url)">自动生成</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.v2ex.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/v2ex.png" alt="V2EX"> V2EX</div>
-                                <div class="desc">一个关于分享和探索的地方。</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://coding.net/">
-                            <div class="item">
-                                <div class="logo"><img src="img/coding.png" alt=" Coding"> Coding</div>
-                                <div class="desc">中国最大的git平台。</div>
-                            </div>
-                        </a>
+
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">网站: </label>
+                                    <input type="text" class="form-control" v-model="current_site.name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">分类: </label>
+                                    <input type="text" class="form-control"  v-model="current_site.class">
+                                </div>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label" > 概要：</label>
+                                    <textarea class="form-control" v-model="current_site.summary"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" @click="SaveSite()"  data-dismiss="modal">确认</button>
+                        </div>
                     </div>
                 </div>
-                <!-- 技术博客 -->
-                <div class="box">
-                    <a href="#" name="sill"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-blogger"></i>技术博客</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="http://www.alloyteam.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/alloyteam-favicon.jpg" alt="腾讯 AlloyTeam 团队"> 腾讯 AlloyTeam 团队</div>
-                                <div class="desc">腾讯Web前端团队，代表作品WebQQ，致力于前端技术的研究</div>
+            </div>
+
+
+                {{--删除确认--}}
+                <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">确认</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                        </a>
-                        <a target="_blank" href="https://isux.tencent.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/isux-favicon.jpg" alt="ISUX"> ISUX</div>
-                                <div class="desc">腾讯社交用户体验设计，简称ISUX，腾讯设计团队网站</div>
+                            <div class="modal-body">
+                                <label>请确认是否删除网站？</label>
                             </div>
-                        </a>
-                        <a target="_blank" href="http://fex.baidu.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/fex-favicon.png"> FEX
-                                </div>
-                                <div class="desc">
-                                    百度Web前端研发部出品
-                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" @click="DeleteSite()" data-dismiss="modal">确认</button>
                             </div>
-                        </a>
-                        <a target="_blank" href="http://taobaofed.org/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/fed-favicon.png"> 淘宝前端团队（FED）
-                                </div>
-                                <div class="desc">
-                                    用技术为体验提供无限可能
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://aotu.io/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/aotu-favicon.png"> 凹凸实验室
-                                </div>
-                                <div class="desc">
-                                    京东用户体验设计部出品
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://75team.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/75team-favicon.png"> 奇舞团
-                                </div>
-                                <div class="desc">
-                                    奇虎360旗下前端开发团队出品
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://efe.baidu.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/efe-favicon.png"> EFE
-                                </div>
-                                <div class="desc">
-                                    由百度多个遵循统一技术体系的前端团队所组成
-                                </div>
-                            </div>
-                        </a>
+                        </div>
                     </div>
                 </div>
-                <!-- 参考文档 -->
-                <div class="box">
-                    <a href="" name="docs"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-wendangdocument78"></i>参考文档</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="http://jquery.cuishifeng.cn/index.html">
-                            <div class="item">
-                                <div class="logo"><img src="img/jquery.png" alt="jQuery"> jQuery</div>
-                                <div class="desc">优秀的JavaScript代码库</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://v3.bootcss.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/bootstrap-favicon.png" alt="Bootstrap"> Bootstrap</div>
-                                <div class="desc">基于HTML/CSS/Javscript的前端框架</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://v3.bootcss.com/">
-                            <div class="item">
-                                <div class="logo"><img src="img/vue-favicon.png" alt="Vue.js"> Vue.js</div>
-                                <div class="desc">构建数据驱动的web界面的渐进式框架</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <!-- 实用工具 -->
-                <div class="box">
-                    <a href="" name="tools"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-tool"></i>实用工具</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="http://www.ibootstrap.cn/">
-                            <div class="item">
-                                <div class="no-logo">bootstrap可视化布局</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://www.peise.net/tools/web/">
-                            <div class="item">
-                                <div class="no-logo">网页配色工具</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://www.uupoop.com/">
-                            <div class="item">
-                                <div class="no-logo">在线PS</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://dummyimage.com/">
-                            <div class="item">
-                                <div class="no-logo">动态图像生成器</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://xiuxiu.web.meitu.com/main.html">
-                            <div class="item">
-                                <div class="no-logo">美图秀秀在线图片处理</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://cli.im/deqr">
-                            <div class="item">
-                                <div class="no-logo">二维码在线生成</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.zybuluo.com/mdeditor">
-                            <div class="item">
-                                <div class="no-logo">Markdown在线编辑器</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://dwz.wailian.work/">
-                            <div class="item">
-                                <div class="no-logo">短网址生成</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <!-- 设计资源 -->
-                <div class="box">
-                    <a href="" name="design"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-wendangdocument78"></i>设计资源</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="http://www.uigreat.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/uigreat-favicon.jpg"> UIGREAT
-                                </div>
-                                <div class="desc">
-                                    优秀设计师的贴心伴侣。
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://huaban.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/huaban-favicon.png"> 花瓣
-                                </div>
-                                <div class="desc">
-                                    花瓣，陪你做生活的设计师。
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://dribbble.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/dribbble-favicon.png"> Dribbble
-                                </div>
-                                <div class="desc">
-                                    设计作品的交流平台
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.behance.net/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/behance-favicon.png"> Behance
-                                </div>
-                                <div class="desc">
-                                    系列设计作品开放平台
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.pinterest.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/pinterest-favicon.png"> Pinterest
-                                </div>
-                                <div class="desc">
-                                    图片分享类的社交网站
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://www.zcool.com.cn/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/zcool-favicon.jpg"> 站酷
-                                </div>
-                                <div class="desc">
-                                    打开站酷,发现更好的设计!
-                                </div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://thefwa.com/">
-                            <div class="item">
-                                <div class="logo">
-                                    <img src="img/thefwa-favicon.png"> FWA
-                                </div>
-                                <div class="desc">
-                                    互动多媒体网站收录平台
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <!-- 学无止境 -->
-                <div class="box">
-                    <a href="#" name="study"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-xuexi1"></i>学无止境</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="https://www.w3cschool.cn/">
-                            <div class="item">
-                                <div class="no-logo">w3cschool</div>
-                                <div class="desc">学编程，从W3cschool开始</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.imooc.com/">
-                            <div class="item">
-                                <div class="no-logo">慕课网</div>
-                                <div class="desc">程序员的梦工厂</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://study.163.com/">
-                            <div class="item">
-                                <div class="no-logo">网易云课堂</div>
-                                <div class="desc">网易公司研发的一款大型在线教育平台服务</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <!-- 网络运营 -->
-                <div class="box">
-                    <a href="" name="operation"></a>
-                    <div class="sub-category">
-                        <div><i class="iconfont icon-yunying"></i>网络运营</div>
-                    </div>
-                    <div>
-                        <a target="_blank" href="https://mp.weixin.qq.com/">
-                            <div class="item">
-                                <div class="no-logo">微信公众平台</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.toutiao.com/">
-                            <div class="item">
-                                <div class="no-logo">今日头条号</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.jianshu.com/">
-                            <div class="item">
-                                <div class="no-logo">简书</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://mp.dayu.com/">
-                            <div class="item">
-                                <div class="no-logo">UC大鱼号</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="http://baijiahao.baidu.com/builder/author/register/index">
-                            <div class="item">
-                                <div class="no-logo">百度百家号</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.weibo.com/login.php">
-                            <div class="item">
-                                <div class="no-logo">新浪微博</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://om.qq.com/userAuth/index">
-                            <div class="item">
-                                <div class="no-logo">腾讯企鹅号</div>
-                            </div>
-                        </a>
-                        <a target="_blank" href="https://www.douban.com/">
-                            <div class="item">
-                                <div class="no-logo">豆瓣</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+
+
+
                 <footer class="footer">
                     <div class="copyright">
                         <div>
@@ -446,68 +152,8 @@
             </div>
         </section>
         <script src="js/jquery.js"></script>
-
-        <script>
-        var oMenu = document.getElementById('menu');
-        var oLeftBar = document.getElementById('leftBar');
-        var menuFrom = document.getElementById('menu-form');
-
-        oMenu.onclick = function() {
-            if (oLeftBar.offsetLeft == 0) {
-                oLeftBar.style.left = -249 + 'px';
-            }
-            else {
-                oLeftBar.style.left = 0;
-            }
-        }
-
-
-        // 监听页面宽度变化
-        window.onresize = function() {
-            judgeWidth();
-            // console.log(document.documentElement.clientWidth);
-        };
-
-        // 判断页面宽度
-        function judgeWidth() {
-            if (document.documentElement.clientWidth > 481) {
-                oLeftBar.style.left = 0;
-            } else {
-                oLeftBar.style.left = -249 + 'px';
-            }
-        }
-
-
-        var oNavItem = document.getElementById('navItem');
-        var aA = oNavItem.getElementsByTagName('a');
-        for (var i = 0; i < aA.length; i++) {
-            aA[i].onclick = function() {
-                for (var j = 0; j < aA.length; j++) {
-                    aA[j].className = '';
-                }
-                this.className = 'active';
-                if (oLeftBar.offsetLeft == 0) {
-                    if (document.documentElement.clientWidth <= 481) {
-                        oLeftBar.style.left = -249 + 'px';
-                        menuFrom.checked = false;
-
-                    }
-                }
-            }
-        }
-
-
-        $(window).scroll(function() {
-            if($(window).scrollTop() >= 200){
-                $('#fixedBar').fadeIn(300);
-            }else{
-                $('#fixedBar').fadeOut(300);
-            }
-        });
-        $('#fixedBar').click(function() {
-            $('html,body').animate({scrollTop:'0px'},800);
-        })
-        </script>
+        <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="{{ URL::asset('js/simple.js') }}"></script>
         <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
         <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
         <script src="{{ URL::asset('js/navi.js') }}"></script>
