@@ -46,12 +46,12 @@
                     </div>
                 </div>
                 <div class="input-group id-input">
-                    <input type="text" class="form-control" v-model="user_id" placeholder="用户Id:密码(如 xiaodong:123)" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control" v-model="user_id" placeholder="用户ID:密码(如 xiaodong:123)" aria-label="Recipient's username" aria-describedby="basic-addon2">
                     <div class="input-group-append">
                         <button v-if="login_status == 0 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Login">登录</button>
                         <button v-if="login_status == 2 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Logout">注销</button>
-                        <button v-if="login_status == 0" class="btn btn-outline-secondary" type="button" @click="Regist">注册</button>
-                        <button v-if="login_status == 2" class="btn btn-outline-secondary" data-toggle="modal" data-target="#EditModal" type="button">添加网站</button>
+                        <button v-if="login_status == 0" class="btn btn-outline-secondary" data-toggle="modal" data-target="#RegistModal" type="button">注册</button>
+                        <button v-if="login_status == 2" class="btn btn-outline-secondary"  @click="ClearCurrentSite()" data-toggle="modal" data-target="#EditModal" type="button">添加网站</button>
                     </div>
                 </div>
                 <div v-for="(site_set, index) in sites" class="box">
@@ -95,15 +95,19 @@
 
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">网站: </label>
-                                    <input type="text" class="form-control" v-model="current_site.name">
+                                    <input type="text" id="site_title" class="form-control" v-model="current_site.name">
                                 </div>
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">分类: </label>
-                                    <input type="text" class="form-control"  v-model="current_site.class">
+                                    <input type="text" id="category-input" class="form-control"  v-model="current_site.class">
+                                    <div>
+                                        <h5><span  v-for="category in class_option" class="badge badge-info" @click="BindClass(category)">@{{ category }}</span></h5>
+                                    </div>
+
                                 </div>
                                 <div class="form-group">
                                     <label for="message-text" class="col-form-label" > 概要：</label>
-                                    <textarea class="form-control" v-model="current_site.summary"></textarea>
+                                    <textarea class="form-control" id="site_description" v-model="current_site.summary"></textarea>
                                 </div>
                             </form>
                         </div>
@@ -137,7 +141,45 @@
                     </div>
                 </div>
 
-
+                {{--注册--}}
+                <div class="modal fade" id="RegistModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">注册账号</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">用户ID</span>
+                                    </div>
+                                    <input type="text" class="form-control" v-model="regist_info.user_id" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">密码</span>
+                                    </div>
+                                    <input type="text" class="form-control" v-model="regist_info.passwd" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                </div>
+                                <div class="input-group form-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"   id="inputGroup-sizing-default">邮箱(可选)</span>
+                                    </div>
+                                    <input type="text" class="form-control" v-model="regist_info.email" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" @click="Regist()" data-dismiss="modal">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <footer class="footer">
                     <div class="copyright">

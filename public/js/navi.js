@@ -1,12 +1,14 @@
 new Vue({
     el: '#app',
     data: {
-        'site_name':'板栗云导航',
-        'sites': [],
-        'current_site': {},
-        'login_status': 0,
-        'user_id': '',
-        'user': {}
+        site_name:'板栗云导航',
+        sites: [],
+        current_site: {},
+        login_status: 0,
+        user_id: '',
+        user: {},
+        class_option: [],
+        regist_info :{}
     },
     methods: {
         initUser: function () {
@@ -26,6 +28,7 @@ new Vue({
             axios.get('/list')
                 .then(function (response) {
                     vm.sites = response.data;
+                    vm.InitClassOption();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -84,29 +87,51 @@ new Vue({
                 });
         },
         Regist: function () {
-            
+            var vm = this;
+            axios.put('/user', this.regist_info)
+                .then(function (response) {
+                    console.log(response);
+                    vm.login_status = response.data.login_status;
+                    window.location.href = window.location.pathname + window.location.search + window.location.hash;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         SiteGen: function (url) {
             var vm = this;
             axios.get('/sitegen?url=' + url)
                 .then(function (response) {
                     vm.current_site.url = response.data.url;
-                    if( !vm.current_site.name ){
-                        vm.current_site.name = response.data.name;
-                    }
-                    if(! vm.current_site.class ){
-                        vm.current_site.class = (response.data.class)?response.data.class:'默认';
-                    }
-                    vm.current_site.url = response.data.url;
-                    if(! vm.current_site.summary){
-                        response.data.summary;
-                    }
+                    vm.current_site.name = response.data.name;
                     vm.current_site.ico = response.data.ico;
-                    console.log(vm.current_site);
+                    vm.current_site.summary = response.data.summary;
+                    $("#site_title").val(response.data.name);
+                    $("#site_description").val(response.data.summary);
+                    if(! $("#category-input").val()){
+                        $("#category-input").val('默认');
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+        },
+        BindClass: function (category) {
+            $("#category-input").val(category);
+        },
+        InitClassOption: function () {
+            vm = this;
+            this.class_option = [];
+            this.class_option.push('default');
+            this.sites.forEach(function (item)
+            {
+                console.log(item);
+                vm.class_option.push(item.class);
+            })
+        },
+        ClearCurrentSite: function () {
+            this.current_site = {};
+            // this.class_option = [];
         }
         
     },
