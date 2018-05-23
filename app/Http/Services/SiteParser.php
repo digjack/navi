@@ -7,6 +7,8 @@
  */
 namespace App\Http\Services;
 
+use Log;
+
 class SiteParser{
 
     protected $icoPath;
@@ -16,6 +18,7 @@ class SiteParser{
     protected $url;
     protected $host;
     protected $html;
+    protected $icoCategory = "/service/navi/public/ico/";
 
     public $errMsg;
 
@@ -30,31 +33,74 @@ class SiteParser{
            return false;
        }
        $this->host = $urlArr['host'];
-//       var_dump('http://'.$this->host);die;
        $this->initHtmlContent();
+       $this->getFaviconFromHtml();
        $this->initFromMeta();
-       $this->initFaviconFromStaticUrl();
        $this->initTitle();
        return true;
     }
     function initHtmlContent(){
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->host);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        $this->html = $output;
+        $host =  $this->host;
+        $mainUrl = "http://{$host}";
+        $mainPage = "/tmp/siteinfo/{$host}.html";
+        $command = "google-chrome-stable --headless --disable-gpu --dump-dom --no-sandbox {$mainUrl} >{$mainPage}";
+        exec($command);
+        $this->html = file_get_contents($mainPage);
         return true;
     }
+
+    function getFaviconFromHtml(){
+        $html = $this->html;
+        $url = 'http://'.$this->host;
+        $lines = preg_split('/\n|\r\n?/', $html);
+        foreach ($lines as $line) {
+            if (strpos($line, 'icon') != false) {
+                $icoLine = $line;
+                break;
+            }
+        }
+        if(empty($icoLine)){
+            return false;
+        }
+        preg_match_all("/href=\"(.*?)\"/i", $icoLine, $matches);
+        if(isset($matches[1][0])){
+            $favicon = $matches[1][0];
+
+            # check if absolute url or relative path
+            $favicon_elems = parse_url($favicon);
+
+            if(!isset($favicon_elems['host'])){
+                $favicon = $url . '/' . $favicon;
+            }
+
+            if(strpos($favicon, 'http') === false){
+                $favicon = 'http:'.$favicon;
+            }
+
+            $arr = explode('.', $favicon);
+            $suffix = end($arr);
+            if(! in_array($suffix, ['ico', 'png', 'img'])){
+                return false;
+            }
+
+            $localIco =  $this->icoCategory.$this->host.'.'.$suffix;
+            $command = "wget {$favicon} -O {$localIco}";
+            Log::info($command);
+            exec($command);
+            $icoUrlPath = '/ico/'.$this->host.'.'.$suffix;
+            $this->icoPath = $icoUrlPath;
+            return true;
+        }
+        return false;
+    }
+
+
 
     function getWebSiteInfo($url){
         $this->init($url);
         return [
             'url' => $url,
-            'ico' => $this->icoPath,
+            'ico' => empty($this->icoPath)?'/ico/example.png':$this->icoPath,
             'keywords' => $this->keyword,
             'summary' => $this->desc,
             'name' => $this->title
@@ -71,9 +117,6 @@ class SiteParser{
             if(strpos($key, 'title') !== false){
                 $this->title = $value;
             }
-            if(strpos($key, 'image') !== false || strpos($key, 'logo') !== false){
-                $this->icoPath = $value;
-            }
             if(strpos($key, 'keyword') !== false){
                 $this->keyword = $value;
             }
@@ -86,42 +129,16 @@ class SiteParser{
             return true;
         }
         $str = $this->html;
-//        var_dump($this->html);die;
-//        var_dump($str);die;
         if(strlen($str)>0){
-            $str = trim(preg_replace('/\s+/', ' ', $str)); // supports line breaks inside <title>
-            preg_match("/\<title\>(.*)\<\/title\>/i",$str,$title); // ignore case
-            if(empty($title[1])){
+            $res = preg_match("/<title>(.*)<\/title>/siU", $str, $title_matches);
+            if (!$res)
                 return false;
-            }
-            $this->title = $title[1];
+
+            // Clean up title: remove EOL's and excessive whitespace.
+            $title = preg_replace('/\s+/', ' ', $title_matches[1]);
+            $this->title = trim($title);
             return true;
         }
         return false;
     }
-
-    function initFaviconFromStaticUrl(){
-        if(! empty($this->icoPath)){
-            return true;
-        }
-        $icoUrl = 'http://'.($this->host)."/favicon.ico";
-        $handle = curl_init($icoUrl);
-        curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
-
-        /* Get the HTML or whatever is linked in $url. */
-        curl_exec($handle);
-
-        /* Check for 404 (file not found). */
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        if($httpCode == 404) {
-            return false;
-        }
-        $this->icoPath = $icoUrl;
-        return true;
-    }
 }
-
-//$siteInfoClass =new SiteParser();
-////$siteInfoClass =new SiteInfo();
-//$info = $siteInfoClass->getWebSiteInfo('stackoverflow.com');
-//var_dump($info);die;
