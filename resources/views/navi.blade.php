@@ -7,7 +7,7 @@
     <meta name="keywords" content="为简,收藏夹,导航,简单的收藏夹">
     <title>为简收藏夹</title>
 
-    <link rel="shortcut icon" href="favcion.ico" />
+    <link rel="shortcut icon" href="favicon.png" />
     <link rel="stylesheet" href=" css/iconfont.css">
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -17,6 +17,14 @@
 </head>
 
 <body>
+{{--loading--}}
+<div class="loader">
+    <div class="loader-content">
+        <img src="loading.gif" alt="Loader" class="loader-loader" />
+    </div>
+</div>
+{{--loading--}}
+
     <div class="container" id="app">
         <aside class="left-bar" id="leftBar">
             <div class="title">
@@ -58,9 +66,9 @@
                     </div>
                 </div>
                 <div class="input-group id-input">
-                    <input type="text" class="form-control">
+                    <input v-model="key_words" type="text" class="form-control">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" @click="listSites()">search</button>
+                        <button  class="btn btn-outline-secondary" type="button" @click="listSites()">搜索</button>
                     </div>
                 </div>
                 <div v-for="(site_set, index) in sites" class="box">
@@ -208,7 +216,6 @@
         <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
         <script src="{{ URL::asset('js/navi.js') }}"></script>
     </div>
-
 </body>
 
 </html>

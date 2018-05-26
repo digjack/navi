@@ -1,3 +1,5 @@
+
+
 new Vue({
     el: '#app',
     data: {
@@ -25,13 +27,11 @@ new Vue({
                 });
         },
         listSites:function () {
-            console.log('cc');
             if(this.key_words){
-               var url = '/list?key=' + this.key_words;
+               var url = '/list?key_word=' + this.key_words;
             }else {
                var url = '/list';
             }
-            console.log('bb');
 
             var vm = this;
             axios.get(url)

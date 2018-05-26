@@ -8,6 +8,7 @@
 namespace App\Http\Services;
 
 use Log;
+use NicoVerbruggen\ImageGenerator\ImageGenerator;
 
 class SiteParser{
 
@@ -35,8 +36,10 @@ class SiteParser{
        $this->host = $urlArr['host'];
        $this->initHtmlContent();
        $this->getFaviconFromHtml();
+       $this->initFaviconFromStaticUrl();
        $this->initFromMeta();
        $this->initTitle();
+       $this->generateSiteImage();
        return true;
     }
     function initHtmlContent(){
@@ -86,7 +89,9 @@ class SiteParser{
             if(! in_array($suffix, ['ico', 'png', 'img'])){
                 return false;
             }
-
+            if(! $this->checkUrl($favicon)){
+                return false;
+            }
             $localIco =  $this->icoCategory.$this->host.'.'.$suffix;
             $command = "wget --no-cookie --no-check-certificate {$favicon} -O {$localIco}";
             exec($command);
@@ -98,7 +103,21 @@ class SiteParser{
         return false;
     }
 
-
+    //get ico from root path
+    function initFaviconFromStaticUrl(){
+        if(! empty($this->icoPath)){
+            return false;
+        }
+        $icoUrl = 'http://'.($this->host)."/favicon.ico";
+        if(! $this->checkUrl($icoUrl)){
+            return false;
+        }
+        $localIco =  $this->icoCategory.$this->host.'.ico';
+        $command = "wget --no-cookie --no-check-certificate {$icoUrl} -O {$localIco}";
+        exec($command);
+        $this->icoPath = '/ico/'.$this->host.'.ico';
+        return true;
+    }
 
     function getWebSiteInfo($url){
         $this->init($url);
@@ -144,5 +163,55 @@ class SiteParser{
             return true;
         }
         return false;
+    }
+
+    //生成网站首字符的图片
+    function generateSiteImage(){
+        if(empty($this->title)){
+            Log::info('没有标题，生成不了图片');
+            return false;
+        }
+        if(! empty($this->icoPath)){
+//            var_dump($this->icoPath);die;
+            return false;
+        }
+        // Create a new instance of ImageGenerator
+        $generator = new ImageGenerator([
+            // Decide on a target size for your image
+            'targetSize' => '48x48',
+            // Fun fact: if you set null for these, you'll get a random color for each generated placeholder!
+            // You can also specify a specific hex color. ("#EEE" or "#EEEEEE" are both accepted)
+            'textColorHex' => null,
+            'backgroundColorHex' => null,
+            // Let's point to a font. If it can't be found, it'll use a fallback (built-in to GD)
+            'pathToFont' => "Kaiti.ttf",
+            'fontSize' => 25
+        ]);
+
+        $char = mb_substr($this->title, 0, 1);
+        $localIco =  $this->icoCategory.$this->host.'.png';
+        $generator->makePlaceholderImage(
+            $char, // The text that will be added to the image
+            $localIco // The path where the image will be saved
+        );
+        $this->icoPath = '/ico/'.$this->host.'.png';
+        return true;
+    }
+
+    //判断链接是否正常
+    public function checkUrl($icoUrl){
+        $handle = curl_init($icoUrl);
+        curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, TRUE);
+
+        /* Get the HTML or whatever is linked in $url. */
+        curl_exec($handle);
+
+        /* Check for 404 (file not found). */
+        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        if($httpCode != 200) {
+            return false;
+        }
+        return true;
     }
 }

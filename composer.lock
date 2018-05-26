@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5bca48e56bbf3a25645858fcab9c285",
+    "content-hash": "d10faf37a1448a2b084c839cfa1756c3",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -869,6 +869,43 @@
                 "time"
             ],
             "time": "2018-03-19T15:50:49+00:00"
+        },
+        {
+            "name": "nicoverbruggen/image-generator",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nicoverbruggen/image-generator.git",
+                "reference": "e231546d69233fe04360867961f9feb02f703a80"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/nicoverbruggen/image-generator/e231546d69233fe04360867961f9feb02f703a80.zip",
+                "reference": "e231546d69233fe04360867961f9feb02f703a80",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": ">=7.0",
+                "php": ">=7.0"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "NicoVerbruggen\\ImageGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nico Verbruggen",
+                    "email": "nico.verb@gmail.com"
+                }
+            ],
+            "description": "Generate placeholder images with a specific size, color and text (optional).",
+            "time": "2017-12-06T21:00:58+00:00"
         },
         {
             "name": "nikic/php-parser",

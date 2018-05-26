@@ -8,6 +8,7 @@ use App\Users;
 use App\Http\Services\SiteParser;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use NicoVerbruggen\ImageGenerator\ImageGenerator;
 
 class IndexController extends Controller
 {
@@ -18,13 +19,18 @@ class IndexController extends Controller
         $userId = $request->session()->get('user_id', 'default');
         $keyWord = $request->input('key_word', '');
         if(empty($keyWord)){
-            $sites = Sites::where(['user_id' => $userId])->get();
+            $sites = Sites::where(['user_id' => $userId])->orderBy('updated_at', 'DESC')->get();
         }else{
-            $sites = Sites::where(['user_id' => $userId])->get();
+            $sites = Sites::where(['user_id' => $userId])
+                ->where('name' ,'like', "%{$keyWord}%")->orderBy('updated_at', 'DESC')->get();
         }
         $result = [];
 
         foreach ($sites as $site){
+            if(strpos($site->url, 'http') === false){
+                $site->url = 'http://'.$site->url;
+                $site->save();
+            }
             $class = $site->class;
             $key = md5($class);
             if(empty($result[$key])){
@@ -85,9 +91,9 @@ class IndexController extends Controller
             abort(400, 'auth error');
         }
         $request->session()->put('user_id', $user->user_id);
+        $request->session()->put('login_user', $user->user_id);   //支持别人的地址同步到自己而加上login_user 字段
         $request->session()->put('user', $user);
         $request->session()->put('login_status', 2);
-
         return response()->json(['login_status' => 2, 'user_id' =>$userId]);
     }
 
@@ -121,7 +127,6 @@ class IndexController extends Controller
     }
 
     public function logout(Request $request){
-//        die('fff');
         $request->session()->flush();
         return response()->json(['status' => true]);
     }
@@ -131,25 +136,29 @@ class IndexController extends Controller
         $url = $request->input('url');
         $siteParse = new SiteParser();
         $info = $siteParse->getWebSiteInfo($url);
-        $info = self::convert_from_latin1_to_utf8_recursively($info);
         return response()->json($info);
     }
-    public static function convert_from_latin1_to_utf8_recursively($dat)
-    {
-        if (is_string($dat)) {
-            return mb_convert_encoding ($dat, 'UTF-8');
-        } elseif (is_array($dat)) {
-            $ret = [];
-            foreach ($dat as $i => $d) $ret[ $i ] = self::convert_from_latin1_to_utf8_recursively($d);
 
-            return $ret;
-        } elseif (is_object($dat)) {
-            foreach ($dat as $i => $d) $dat->$i = self::convert_from_latin1_to_utf8_recursively($d);
-
-            return $dat;
-        } else {
-            return $dat;
+    //计数 type 0 普通计数  1 点赞计数  2 不喜欢计数
+    public function click(Request $request){
+        $id = $request->input('id');
+        $type = $request->input('type', 0);
+        $site = Sites::find($id);
+        switch ($type){
+            case 0:
+                $site->increment('total_click', 1);
+                $userId = $request->session()->get('user_id', '');
+                if($userId == $site->user_id){
+                    $site->increment('click', 1);
+                }
+                break;
+            case 1:
+                $site->increment('up', 1);
+                break;
+            case 2:
+                $site->increment('down', 1);
+                break;
         }
+        return response()->json(['status' => true]);
     }
-
 }
