@@ -43,8 +43,10 @@ class SiteParser{
         $host =  $this->host;
         $mainUrl = "http://{$host}";
         $mainPage = "/tmp/siteinfo/{$host}.html";
-        $command = "google-chrome-stable --headless --disable-gpu --dump-dom --no-sandbox {$mainUrl} >{$mainPage}";
-        exec($command);
+        if(! file_exists($mainPage)){
+            $command = "google-chrome-stable --headless --disable-gpu --dump-dom --no-sandbox {$mainUrl} >{$mainPage}";
+            exec($command);
+        }
         $this->html = file_get_contents($mainPage);
         return true;
     }
@@ -76,7 +78,9 @@ class SiteParser{
             if(strpos($favicon, 'http') === false){
                 $favicon = 'http:'.$favicon;
             }
-
+            if(strpos($favicon, '?')!== false){
+                list($favicon, $qs) = explode("?", $favicon, 2);
+            }
             $arr = explode('.', $favicon);
             $suffix = end($arr);
             if(! in_array($suffix, ['ico', 'png', 'img'])){
@@ -84,11 +88,11 @@ class SiteParser{
             }
 
             $localIco =  $this->icoCategory.$this->host.'.'.$suffix;
-            $command = "wget {$favicon} -O {$localIco}";
-            Log::info($command);
+            $command = "wget --no-cookie --no-check-certificate {$favicon} -O {$localIco}";
             exec($command);
             $icoUrlPath = '/ico/'.$this->host.'.'.$suffix;
             $this->icoPath = $icoUrlPath;
+            Log::info($command);
             return true;
         }
         return false;

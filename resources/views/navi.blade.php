@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>板栗云导航</title>
+    <meta name="keywords" content="为简,收藏夹,导航,简单的收藏夹">
+    <title>为简收藏夹</title>
 
     <link rel="shortcut icon" href="favcion.ico" />
     <link rel="stylesheet" href=" css/iconfont.css">
@@ -22,8 +23,19 @@
                 <p>@{{site_name}}</p>
             </div>
             <nav class="nav">
-                <div class="item active"><a href="">添加地址</a><i class="line"></i></div>
 
+                <div class="item active input-group-sm">
+                    <input type="text" v-model="user_id" placeholder="ID:密码(如 xiaodong:123)" class="form-control">
+                </div>
+                <button type="button" v-if="login_status == 0 || login_status == 1" type="button" @click="Login"  class="btn btn-secondary btn-sm">登录</button>
+                <button type="button" v-if="login_status == 2 || login_status == 1" type="button" @click="Logout"  class="btn btn-secondary btn-sm">注销</button>
+                <button type="button"  v-if="login_status == 0" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#RegistModal">注册</button>
+                <button type="button" v-if="login_status == 2" @click="ClearCurrentSite()" data-toggle="modal" data-target="#EditModal" class="btn btn-secondary btn-sm">添加网站</button>
+
+                <li class="item active">
+                    <a  class="active">网址分类</a>
+                    <i class="line"></i>
+                </li>
                 <ul  class="nav-item" id="navItem">
                     <li v-for="(site_set, index) in sites"  >
                         <a v-bind:href="'#' + index" class="active"><i class="iconfont"></i>@{{ site_set.class }}</a>
@@ -46,12 +58,9 @@
                     </div>
                 </div>
                 <div class="input-group id-input">
-                    <input type="text" class="form-control" v-model="user_id" placeholder="用户ID:密码(如 xiaodong:123)" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control">
                     <div class="input-group-append">
-                        <button v-if="login_status == 0 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Login">登录</button>
-                        <button v-if="login_status == 2 || login_status == 1" class="btn btn-outline-secondary" type="button" @click="Logout">注销</button>
-                        <button v-if="login_status == 0" class="btn btn-outline-secondary" data-toggle="modal" data-target="#RegistModal" type="button">注册</button>
-                        <button v-if="login_status == 2" class="btn btn-outline-secondary"  @click="ClearCurrentSite()" data-toggle="modal" data-target="#EditModal" type="button">添加网站</button>
+                        <button class="btn btn-outline-secondary" type="button" @click="listSites()">search</button>
                     </div>
                 </div>
                 <div v-for="(site_set, index) in sites" class="box">

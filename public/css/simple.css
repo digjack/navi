@@ -18,3 +18,9 @@ a:hover {
 .badge {
     margin: 2%;
 }
+.nav button{
+    margin: 0 10%;
+}
+.btn-outline-secondary{
+    border-color: #dee2e6;
+}

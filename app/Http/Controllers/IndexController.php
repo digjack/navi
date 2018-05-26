@@ -16,7 +16,12 @@ class IndexController extends Controller
     //获取网站列表
     public function list(Request $request){
         $userId = $request->session()->get('user_id', 'default');
-        $sites = Sites::where(['user_id' => $userId])->get();
+        $keyWord = $request->input('key_word', '');
+        if(empty($keyWord)){
+            $sites = Sites::where(['user_id' => $userId])->get();
+        }else{
+            $sites = Sites::where(['user_id' => $userId])->get();
+        }
         $result = [];
 
         foreach ($sites as $site){

@@ -1,8 +1,9 @@
 new Vue({
     el: '#app',
     data: {
-        site_name:'板栗云导航',
+        site_name:'为简收藏夹',
         sites: [],
+        key_words: '',
         current_site: {},
         login_status: 0,
         user_id: '',
@@ -24,8 +25,16 @@ new Vue({
                 });
         },
         listSites:function () {
+            console.log('cc');
+            if(this.key_words){
+               var url = '/list?key=' + this.key_words;
+            }else {
+               var url = '/list';
+            }
+            console.log('bb');
+
             var vm = this;
-            axios.get('/list')
+            axios.get(url)
                 .then(function (response) {
                     vm.sites = response.data;
                     vm.InitClassOption();
@@ -118,6 +127,8 @@ new Vue({
         },
         BindClass: function (category) {
             $("#category-input").val(category);
+            this.current_site.class = category;
+            console.log(this.current_site);
         },
         InitClassOption: function () {
             vm = this;
@@ -133,7 +144,6 @@ new Vue({
             this.current_site = {};
             // this.class_option = [];
         }
-        
     },
     created: function (){
         this.initUser();
