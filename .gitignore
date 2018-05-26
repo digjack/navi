@@ -13,3 +13,4 @@ yarn-error.log
 .env
 /nohup.out
 debug
+public/ico
