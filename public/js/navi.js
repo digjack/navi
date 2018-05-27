@@ -1,9 +1,7 @@
-
-
 new Vue({
     el: '#app',
     data: {
-        site_name:'为简收藏夹',
+        site_name:'为简收藏',
         sites: [],
         key_words: '',
         current_site: {},
@@ -11,21 +9,12 @@ new Vue({
         user_id: '',
         user: {},
         class_option: [],
-        regist_info :{}
+        regist_info :{},
+        hot_ids: [],
+        hot_sites: [],
+        loading: "show"
     },
     methods: {
-        initUser: function () {
-            var vm = this;
-            axios.get('/user')
-                .then(function (response) {
-                    vm.login_status = response.data.login_status;
-                    vm.user_id = response.data.user_id;
-                    vm.listSites();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        },
         listSites:function () {
             if(this.key_words){
                var url = '/list?key_word=' + this.key_words;
@@ -73,6 +62,9 @@ new Vue({
         },
         Login: function () {
             var vm = this;
+            if(! this.user_id){
+                this.user_id = "default";
+            }
             axios.post('/user', {user_id: this.user_id})
                 .then(function (response) {
                     console.log(response);
@@ -133,7 +125,6 @@ new Vue({
         InitClassOption: function () {
             vm = this;
             this.class_option = [];
-            this.class_option.push('default');
             this.sites.forEach(function (item)
             {
                 console.log(item);
@@ -143,9 +134,48 @@ new Vue({
         ClearCurrentSite: function () {
             this.current_site = {};
             // this.class_option = [];
+        },
+        AccessId: function (user_id) {
+            this.user_id = user_id;
+            this.Login();
+        },
+        ListHotIds: function () {
+            vm = this;
+            axios.get('/hotids')
+                .then(function (response) {
+                    vm.hot_ids = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        ListHotSites: function () {
+            vm = this;
+            axios.get('/hotsites')
+                .then(function (response) {
+                    vm.hot_sites = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        getQueryVariable: function (variable){
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == variable){return pair[1];}
+            }
+            return false;
         }
     },
     created: function (){
-        this.initUser();
+        var userId = this.getQueryVariable('user_id');
+        if(userId){
+            this.user_id = userId;
+        }
+        this.Login();
+        this.ListHotIds();
+        this.ListHotSites();
     }
 })

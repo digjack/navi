@@ -16,6 +16,7 @@ class IndexController extends Controller
 
     //获取网站列表
     public function list(Request $request){
+//        sleep(3);
         $userId = $request->session()->get('user_id', 'default');
         $keyWord = $request->input('key_word', '');
         if(empty($keyWord)){
@@ -60,6 +61,7 @@ class IndexController extends Controller
         $site->name = $request->input('name');
         $site->class = $request->input('class', '默认');
         $site->summary = $request->input('summary', ' ');
+        $site->is_privated = (int) $request->input('is_privated', 0);
         $site->save();
         return response()->json(['status' => true]);
     }
@@ -160,5 +162,30 @@ class IndexController extends Controller
                 break;
         }
         return response()->json(['status' => true]);
+    }
+
+    public function hotIds(){
+        $users = Users::orderBy('updated_at', 'desc')->take(10)->get();
+        $res = [];
+        foreach ($users as $user){
+            $res []= [
+                'user_id' => $user->user_id,
+                'label' => '默认'
+            ];
+        }
+        return response()->json($res);
+    }
+    public function hotSites(){
+        $sites = Sites::orderBy('up', 'desc')->take(10)->get();
+        $res = [];
+        foreach ($sites as $site){
+            $res []= [
+                'id' => $site->id,
+                'url' => $site->url,
+                'name' => $site->name,
+                'class' => $site->class
+            ];
+        }
+        return response()->json($res);
     }
 }

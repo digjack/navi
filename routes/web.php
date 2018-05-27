@@ -28,6 +28,12 @@ Route::post('logout', "IndexController@logout");
 
 Route::get('sitegen', "IndexController@sitegen");
 
+Route::get('hotids', "IndexController@hotIds");
+Route::get('hotsites', "IndexController@hotSites");
+
+
+
+
 
 
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="keywords" content="为简,收藏夹,导航,简单的收藏夹">
-    <title>为简收藏夹</title>
+    <title>为简收藏</title>
 
     <link rel="shortcut icon" href="favicon.png" />
     <link rel="stylesheet" href=" css/iconfont.css">
@@ -33,11 +33,11 @@
             <nav class="nav">
 
                 <div class="item active input-group-sm">
-                    <input type="text" v-model="user_id" placeholder="ID:密码(如 xiaodong:123)" class="form-control">
+                    <input type="text" v-model="user_id" placeholder="id:密码(如 xiaodong:123)" class="form-control">
                 </div>
                 <button type="button" v-if="login_status == 0 || login_status == 1" type="button" @click="Login"  class="btn btn-secondary btn-sm">登录</button>
                 <button type="button" v-if="login_status == 2 || login_status == 1" type="button" @click="Logout"  class="btn btn-secondary btn-sm">注销</button>
-                <button type="button"  v-if="login_status == 0" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#RegistModal">注册</button>
+                <button type="button" v-if="login_status == 0" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#RegistModal">注册</button>
                 <button type="button" v-if="login_status == 2" @click="ClearCurrentSite()" data-toggle="modal" data-target="#EditModal" class="btn btn-secondary btn-sm">添加网站</button>
 
                 <li class="item active">
@@ -87,6 +87,7 @@
                         </a>
                     </div>
                 </div>
+                {{--推荐id列表--}}
 
 {{--修改网站编辑框--}}
             <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -207,6 +208,28 @@
                     </div>
                 </footer>
                 <div id="fixedBar"><svg class="Zi Zi--BackToTop" title="回到顶部" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M16.036 19.59a1 1 0 0 1-.997.995H9.032a.996.996 0 0 1-.997-.996v-7.005H5.03c-1.1 0-1.36-.633-.578-1.416L11.33 4.29a1.003 1.003 0 0 1 1.412 0l6.878 6.88c.782.78.523 1.415-.58 1.415h-3.004v7.005z"></path></svg></div>
+            </div>
+            <div id="right-cards">
+                <div class="card border-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header">ID 推荐</div>
+                    <div class="list-group">
+                        <button type="button" v-for="users in hot_ids" @click="AccessId(users.user_id)" class="list-group-item list-group-item-action">
+                            @{{ users.user_id }}
+                            <span class="badge badge-info pull-right">@{{ users.label }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card border-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header">站点推荐</div>
+                    <div class="list-group">
+                        <button  type="button" v-for="site in hot_sites"  class="list-group-item list-group-item-action">
+                            <a v-bind:href="site.url" target="_blank">
+                                @{{ site.name }}
+                            </a>
+                            <span class="badge badge-info pull-right">@{{ site.class }}</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
         <script src="js/jquery.js"></script>

@@ -63,3 +63,48 @@ a:hover {
 @-webkit-keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);transform:translate3d(0,-100%,0)}100%{opacity:1;-webkit-transform:none;transform:none}}
 @keyframes fadeInDown{0%{opacity:0;-webkit-transform:translate3d(0,-100%,0);}}
 
+/* recommend card  css*/
+.card-header {
+    background-color: rgb(217, 237, 247);
+}
+
+#right-cards .card{
+    margin: 85px 0 0 50px;
+}
+
+#right-cards {
+    min-width: 20%;
+}
+
+.main {
+    flex-direction: row !important;
+}
+.main .box .item {
+    width: 15%;
+    border-radius: 15px;
+}
+
+button:focus{
+    outline: none;
+}
+#right-cards .card {
+    min-height: 20%;
+}
+
+#right-cards a,#right-cards a:hover, #right-cards a:active,#right-cards a:focus {
+    color:grey;
+}
+#right-cards .list-group-item{
+    padding: .45rem .45rem;
+}
+.main #mainContent{
+    width: 1200px;
+}
+
+#right-cards .list-group-item a{
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
