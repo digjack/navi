@@ -63,7 +63,7 @@ new Vue({
         Login: function () {
             var vm = this;
             if(! this.user_id){
-                this.user_id = "default";
+                this.user_id = "";
             }
             axios.post('/user', {user_id: this.user_id})
                 .then(function (response) {
@@ -167,14 +167,28 @@ new Vue({
                 if(pair[0] == variable){return pair[1];}
             }
             return false;
+        },
+        initUser: function () {
+            vm = this;
+            axios.get('/user')
+                .then(function (response) {
+                    vm.user_id = response.data.user_id;
+                    vm.login_status = response.data.login_status;
+                    vm.listSites();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     },
     created: function (){
         var userId = this.getQueryVariable('user_id');
         if(userId){
             this.user_id = userId;
+            this.Login();
+        }else {
+            this.initUser();
         }
-        this.Login();
         this.ListHotIds();
         this.ListHotSites();
     }

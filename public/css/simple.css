@@ -108,3 +108,10 @@ button:focus{
     text-overflow: ellipsis;
     display: inline-block;
 }
+
+.form-check-input{
+    margin-top: .5rem;
+}
+.form-check label{
+    font-size: 8px;
+}

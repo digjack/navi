@@ -18,13 +18,16 @@ class IndexController extends Controller
     public function list(Request $request){
 //        sleep(3);
         $userId = $request->session()->get('user_id', 'default');
+        $loginStatus = $request->session()->get('login_status', 1);
+
+        $isPrivate = ($loginStatus == 2)?[0, 1]:[0];
         $keyWord = $request->input('key_word', '');
-        if(empty($keyWord)){
-            $sites = Sites::where(['user_id' => $userId])->orderBy('updated_at', 'DESC')->get();
-        }else{
-            $sites = Sites::where(['user_id' => $userId])
-                ->where('name' ,'like', "%{$keyWord}%")->orderBy('updated_at', 'DESC')->get();
+        $siteMp = Sites::where(['user_id' => $userId])->orderBy('updated_at', 'DESC');
+        if(! empty($keyWord)){
+            $siteMp->where('name' ,'like', "%{$keyWord}%");
         }
+        $sites = $siteMp->whereIn('is_private', $isPrivate)->get();
+
         $result = [];
 
         foreach ($sites as $site){
@@ -32,6 +35,9 @@ class IndexController extends Controller
                 $site->url = 'http://'.$site->url;
                 $site->save();
             }
+
+            $site->is_private = (bool) $site->is_private;
+
             $class = $site->class;
             $key = md5($class);
             if(empty($result[$key])){
@@ -61,7 +67,7 @@ class IndexController extends Controller
         $site->name = $request->input('name');
         $site->class = $request->input('class', '默认');
         $site->summary = $request->input('summary', ' ');
-        $site->is_privated = (int) $request->input('is_privated', 0);
+        $site->is_private = (int) $request->input('is_private', 0);
         $site->save();
         return response()->json(['status' => true]);
     }
@@ -176,7 +182,7 @@ class IndexController extends Controller
         return response()->json($res);
     }
     public function hotSites(){
-        $sites = Sites::orderBy('up', 'desc')->take(10)->get();
+        $sites = Sites::orderBy('up', 'desc')->where('is_private', '!=', '1')->take(10)->get();
         $res = [];
         foreach ($sites as $site){
             $res []= [

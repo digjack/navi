@@ -109,23 +109,27 @@
                                             <button class="btn btn-outline-secondary" type="button" @click="SiteGen(current_site.url)">自动生成</button>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group">
                                     <label for="recipient-name" class="col-form-label">网站: </label>
                                     <input type="text" id="site_title" class="form-control" v-model="current_site.name">
-                                </div>
-                                <div class="form-group">
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="current_site.is_private" id="gridCheck">
+                                        <label class="form-check-label" for="gridCheck">
+                                            个人可见
+                                        </label>
+                                    </div>
+
                                     <label for="recipient-name" class="col-form-label">分类: </label>
                                     <input type="text" id="category-input" class="form-control"  v-model="current_site.class">
+
                                     <div>
                                         <h5><span  v-for="category in class_option" class="badge badge-info" @click="BindClass(category)">@{{ category }}</span></h5>
                                     </div>
 
-                                </div>
-                                <div class="form-group">
                                     <label for="message-text" class="col-form-label" > 概要：</label>
                                     <textarea class="form-control" id="site_description" v-model="current_site.summary"></textarea>
+
                                 </div>
                             </form>
                         </div>
@@ -211,7 +215,7 @@
             </div>
             <div id="right-cards">
                 <div class="card border-light mb-3" style="max-width: 18rem;">
-                    <div class="card-header">ID 推荐</div>
+                    <div class="card-header">用户推荐</div>
                     <div class="list-group">
                         <button type="button" v-for="users in hot_ids" @click="AccessId(users.user_id)" class="list-group-item list-group-item-action">
                             @{{ users.user_id }}

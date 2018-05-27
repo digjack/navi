@@ -135,13 +135,13 @@ class SiteParser{
         $meta = get_meta_tags($url);
         foreach ($meta as $key => $value){
             if(strpos($key, 'description') !== false){
-                $this->desc = $value;
+                $this->desc = mb_convert_encoding($value,  'UTF-8', 'UTF-8');
             }
             if(strpos($key, 'title') !== false){
-                $this->title = $value;
+                $this->title = mb_convert_encoding($value,  'UTF-8', 'UTF-8');
             }
             if(strpos($key, 'keyword') !== false){
-                $this->keyword = $value;
+                $this->keyword = mb_convert_encoding($value,  'UTF-8', 'UTF-8');
             }
         }
         return true;
