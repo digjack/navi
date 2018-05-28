@@ -115,3 +115,9 @@ button:focus{
 .form-check label{
     font-size: 8px;
 }
+.left-bar .nav .item {
+    border-top: 0px solid rgba(255,255,255,.04);
+}
+body {
+    font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+}

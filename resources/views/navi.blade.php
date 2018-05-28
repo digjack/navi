@@ -31,7 +31,9 @@
                 <p>@{{site_name}}</p>
             </div>
             <nav class="nav">
-
+                <li class="item active">
+                    <a  class="active">当前用户: @{{ user_id }}</a>
+                </li>
                 <div class="item active input-group-sm">
                     <input type="text" v-model="user_id" placeholder="id:密码(如 xiaodong:123)" class="form-control">
                 </div>
@@ -70,10 +72,13 @@
                       </label>
                     </div>
                 </div>
-                <div class="input-group id-input">
-                    <input v-model="key_words" type="text" class="form-control">
-                    <div class="input-group-append">
-                        <button  class="btn btn-outline-secondary" type="button" @click="listSites()">搜索</button>
+                <div id="mainHead">
+
+                    <div class="input-group id-input">
+                        <input v-model="key_words" type="text" class="form-control">
+                        <div class="input-group-append">
+                            <button  class="btn btn-outline-secondary" type="button" @click="listSites()">搜索</button>
+                        </div>
                     </div>
                 </div>
                 <div v-for="(site_set, index) in sites" class="box">

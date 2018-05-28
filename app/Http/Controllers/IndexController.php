@@ -49,6 +49,7 @@ class IndexController extends Controller
         return response()->json(array_values($result));
     }
 
+
     //保存网站
     public function save(Request $request){
         $userId = $request->session()->get('user_id', 'default');

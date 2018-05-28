@@ -75,6 +75,7 @@ new Vue({
                 .catch(function (error) {
                     console.log(error);
                 });
+
         },
         Logout:function () {
             var vm = this;
