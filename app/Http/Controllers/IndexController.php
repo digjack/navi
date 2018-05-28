@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 
 use App\Sites;
+use Log;
 use App\Users;
 use App\Http\Services\SiteParser;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use NicoVerbruggen\ImageGenerator\ImageGenerator;
+use Mail;
 
 class IndexController extends Controller
 {
@@ -16,7 +18,6 @@ class IndexController extends Controller
 
     //获取网站列表
     public function list(Request $request){
-//        sleep(3);
         $userId = $request->session()->get('user_id', 'default');
         $loginStatus = $request->session()->get('login_status', 1);
 
@@ -63,7 +64,12 @@ class IndexController extends Controller
         }
         $site->user_id = $userId;
         $site->url =  $url;
-        $site->ico = $request->input('ico', 'example');
+        $ico = $request->input('ico', '');
+        $name = $request->input('name');
+        if(empty($ico)){
+            $ico = $this->generateSiteImage($name, $url);
+        }
+        $site->ico =$ico;
         $site->name = $request->input('name');
         $site->class = $request->input('class', '默认');
         $site->summary = $request->input('summary', ' ');
@@ -193,5 +199,52 @@ class IndexController extends Controller
             ];
         }
         return response()->json($res);
+    }
+
+    public function advise(Request $request){
+        $msg = $request->input('text');
+        $contact = $request->input('contact', 'null');
+        $content = "联系人: {$contact} \n  留言: {$msg} \n";
+        Log::info("留言通知".$content);
+        Mail::raw($content, function ($message) {
+            $message
+                ->to('244541048@qq.com')
+                ->subject('为简收藏留言通知');
+
+        });
+        return response()->json(['status' => true]);
+    }
+
+    //生成网站首字符的图片
+    function generateSiteImage($title, $url){
+        if(strpos($url, 'http') === false){
+            $url = 'http://'.$url;
+        }
+
+        $urlArr = parse_url($url);
+        if(empty($urlArr['host'])){
+            return false;
+        }
+        $host = $urlArr['host'];
+        // Create a new instance of ImageGenerator
+        $generator = new ImageGenerator([
+            // Decide on a target size for your image
+            'targetSize' => '48x48',
+            // Fun fact: if you set null for these, you'll get a random color for each generated placeholder!
+            // You can also specify a specific hex color. ("#EEE" or "#EEEEEE" are both accepted)
+            'textColorHex' => null,
+            'backgroundColorHex' => null,
+            // Let's point to a font. If it can't be found, it'll use a fallback (built-in to GD)
+            'pathToFont' => "Kaiti.ttf",
+            'fontSize' => 25
+        ]);
+
+        $char = mb_substr($title, 0, 1);
+        $localIco =  "/service/navi/public/ico/".$host.'.png';
+        $generator->makePlaceholderImage(
+            $char, // The text that will be added to the image
+            $localIco // The path where the image will be saved
+        );
+        return  '/ico/'.$host.'.png';
     }
 }

@@ -49,7 +49,12 @@
                         <a v-bind:href="'#' + index" class="active"><i class="iconfont"></i>@{{ site_set.class }}</a>
                     </li>
                 </ul>
-                <div class="item comment"><a target="_blank" href="#"><i class="iconfont icon-liuyan"></i>留言</a></div>
+                <div class="item comment">
+                    <a data-toggle="modal" data-target="#SuggestionModal">
+                        <i class="iconfont icon-liuyan"></i>
+                        留言
+                    </a>
+                </div>
             </nav>
         </aside>
         <section class="main">
@@ -198,6 +203,42 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                                 <button type="button" class="btn btn-primary" @click="Regist()" data-dismiss="modal">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{--留言--}}
+                <div class="modal fade" id="SuggestionModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">留言</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label" >问题/建议：</label>
+                                        <textarea class="form-control"  v-model="suggestion.text"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" style="font-size: 12px;">联系方式(可选)</span>
+                                            </div>
+                                            <input type="text" class="form-control" v-model="suggestion.contact">
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" @click="PostSuggestion()"  data-dismiss="modal">确认</button>
                             </div>
                         </div>
                     </div>

@@ -12,7 +12,8 @@ new Vue({
         regist_info :{},
         hot_ids: [],
         hot_sites: [],
-        loading: "show"
+        loading: "show",
+        suggestion: {}
     },
     methods: {
         listSites:function () {
@@ -175,6 +176,16 @@ new Vue({
                     vm.user_id = response.data.user_id;
                     vm.login_status = response.data.login_status;
                     vm.listSites();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        PostSuggestion: function () {
+            vm = this;
+            axios.post('/advise', this.suggestion)
+                .then(function (response) {
+                    console.log(response.data);
                 })
                 .catch(function (error) {
                     console.log(error);
