@@ -12,11 +12,12 @@ new Vue({
         regist_info :{},
         hot_ids: [],
         hot_sites: [],
-        loading: "show",
-        suggestion: {}
+        loading: false,
+        suggestion: {},
     },
     methods: {
         listSites:function () {
+            this.loading = true;
             if(this.key_words){
                var url = '/list?key_word=' + this.key_words;
             }else {
@@ -28,8 +29,10 @@ new Vue({
                 .then(function (response) {
                     vm.sites = response.data;
                     vm.InitClassOption();
+                    vm.loading = false;
                 })
                 .catch(function (error) {
+                    vm.loading = false;
                     console.log(error);
                 });
 
@@ -62,6 +65,7 @@ new Vue({
                 });
         },
         Login: function () {
+            this.loading = true;
             var vm = this;
             if(! this.user_id){
                 this.user_id = "";
@@ -70,9 +74,11 @@ new Vue({
                 .then(function (response) {
                     console.log(response);
                     vm.login_status = response.data.login_status;
+                    vm.loading = false;
                     vm.listSites();
                 })
                 .catch(function (error) {
+                    vm.loading = false;
                     console.log(error);
                 });
 
@@ -102,6 +108,7 @@ new Vue({
                 });
         },
         SiteGen: function (url) {
+            this.loading = true;
             var vm = this;
             axios.get('/sitegen?url=' + url)
                 .then(function (response) {
@@ -114,6 +121,7 @@ new Vue({
                     if(! $("#category-input").val()){
                         $("#category-input").val('默认');
                     }
+                    vm.loading = false;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -183,12 +191,15 @@ new Vue({
                 });
         },
         PostSuggestion: function () {
+            this.loading = true;
             vm = this;
             axios.post('/advise', this.suggestion)
                 .then(function (response) {
+                    vm.loading = false;
                     console.log(response.data);
                 })
                 .catch(function (error) {
+                    vm.loading = false;
                     console.log(error);
                 });
         }

@@ -26,6 +26,11 @@
 {{--loading--}}
 
     <div class="container" id="app">
+        {{--apiloading--}}
+        <div v-if="loading"  class="api-loader">
+            <img src="api-loading.gif" />
+        </div>
+        {{--apiloading--}}
         <aside class="left-bar" id="leftBar">
             <div class="title">
                 <p>@{{site_name}}</p>
@@ -116,7 +121,7 @@
                                     <div class="input-group">
                                         <input type="text" class="form-control" v-model="current_site.url">
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary" type="button" @click="SiteGen(current_site.url)">自动生成</button>
+                                            <button class="btn btn-outline-secondary" type="button" @click="SiteGen(current_site.url)">@{{ loading ? '获取中...': '自动填充' }}</button>
                                         </div>
                                     </div>
 

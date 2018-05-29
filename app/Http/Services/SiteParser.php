@@ -48,6 +48,7 @@ class SiteParser{
         $mainPage = "/tmp/siteinfo/{$host}.html";
         if(! file_exists($mainPage)){
             $command = "google-chrome-stable --headless --disable-gpu --dump-dom --no-sandbox {$mainUrl} >{$mainPage}";
+            Log::info($command);
             exec($command);
         }
         $this->html = file_get_contents($mainPage);
