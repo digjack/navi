@@ -7,6 +7,8 @@ new Vue({
         current_site: {},
         login_status: 0,
         user_id: '',
+        deep_user_id: '',
+        deep_user_password: '',
         user: {},
         class_option: [],
         regist_info :{},
@@ -74,6 +76,13 @@ new Vue({
                 .then(function (response) {
                     console.log(response);
                     vm.login_status = response.data.login_status;
+                    if(vm.deep_user_id === vm.user_id.split(":",1)[0]){
+                        vm.login_status = 2
+                    }
+                    if(vm.login_status === 2){
+                        vm.deep_user_id = vm.user_id.split(":",1)[0];
+                        vm.deep_user_password = vm.user_id.split(":",1)[1];
+                    }
                     vm.loading = false;
                     vm.listSites();
                 })
@@ -200,6 +209,22 @@ new Vue({
                 })
                 .catch(function (error) {
                     vm.loading = false;
+                    console.log(error);
+                });
+        },
+        Click:function (siteId) {
+            axios.post('/click', {id:siteId})
+                .then(function (response) {
+                });
+        },
+        ImportSite: function () {
+            var vm = this;
+            this.current_site.user_id = this.deep_user_id;
+            axios.put('/site', this.current_site)
+                .then(function (response) {
+                    vm.current_site = {};
+                })
+                .catch(function (error) {
                     console.log(error);
                 });
         }

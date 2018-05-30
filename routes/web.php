@@ -32,6 +32,7 @@ Route::get('hotids', "IndexController@hotIds");
 Route::get('hotsites', "IndexController@hotSites");
 
 Route::post('advise', "IndexController@advise");
+Route::post('click', "IndexController@click");
 
 
 

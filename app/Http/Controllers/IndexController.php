@@ -23,7 +23,7 @@ class IndexController extends Controller
 
         $isPrivate = ($loginStatus == 2)?[0, 1]:[0];
         $keyWord = $request->input('key_word', '');
-        $siteMp = Sites::where(['user_id' => $userId])->orderBy('updated_at', 'DESC');
+        $siteMp = Sites::where(['user_id' => $userId])->orderBy('click', 'DESC');
         if(! empty($keyWord)){
             $siteMp->where('name' ,'like', "%{$keyWord}%");
         }
@@ -52,7 +52,10 @@ class IndexController extends Controller
 
     //保存网站
     public function save(Request $request){
-        $userId = $request->session()->get('user_id', 'default');
+        $userId = $request->input('user_id', '');
+        if(empty($userId)){
+            $userId = $request->session()->get('user_id', 'default');
+        }
         $url = $request->input('url');
         $id = $request->input('id', 0);
         if(empty($id)){

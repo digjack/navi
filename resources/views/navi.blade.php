@@ -53,7 +53,7 @@
                 </li>
                 <ul  class="nav-item" id="navItem">
                     <li v-for="(site_set, index) in sites"  >
-                        <a v-bind:href="'#' + index" class="active"><i class="iconfont"></i>@{{ site_set.class }}</a>
+                        <a v-bind:href="'#' + index"  class="active"><i class="iconfont"></i>@{{ site_set.class }}</a>
                     </li>
                 </ul>
                 <div class="item comment">
@@ -92,12 +92,13 @@
                         <div><i class="iconfont"></i>@{{ site_set.class }}</div>
                     </div>
                     <div v-for="site in site_set.list">
-                        <a target="_blank" v-bind:href="site.url">
-                            <div class="item">
+                        <a target="_blank" v-bind:href="site.url" @click="Click(site.id)">
+                            <div class="item" >
                                 <div class="logo"><img v-bind:src="site.ico"> @{{ site.name }}</div>
                                 <div class="desc">@{{ site.summary }}</div>
-                                <a v-if="login_status == 2" id="show-modal" @click="CurrentSite(site)"><i class="icon-edit" data-toggle="modal" data-target="#EditModal"></i></a>
-                                <a v-if="login_status == 2" id="show-modal" @click="CurrentSite(site)"><i class="icon-trash" data-toggle="modal" data-target="#DeleteModal"></i></a>
+                                <a v-if="login_status == 2" id="edit-modal" @click="CurrentSite(site)"><i class="icon-edit" data-toggle="modal" data-target="#EditModal"></i></a>
+                                <a v-if="login_status == 2" id="delete-modal" @click="CurrentSite(site)"><i class="icon-trash" data-toggle="modal" data-target="#DeleteModal"></i></a>
+                                <a v-if="deep_user_id && deep_user_id != user_id.split(':',1)[0]" id="share-modal" @click="CurrentSite(site)"><i class="icon-share" data-toggle="modal" data-target="#ShareModal"></i></a>
                             </div>
                         </a>
                     </div>
@@ -173,6 +174,27 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                                 <button type="button" class="btn btn-primary" @click="DeleteSite()" data-dismiss="modal">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{--迁移到自己的收藏夹--}}
+                <div class="modal fade" id="ShareModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">收藏到我的导航</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label>请确认是否收藏 @{{ current_site.name }} 到 @{{ deep_user_id }}？</label>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" @click="ImportSite()" data-dismiss="modal">确认</button>
                             </div>
                         </div>
                     </div>
